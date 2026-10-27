@@ -27,8 +27,10 @@
         "nav     nav"
         "section aside"
         "article aside"
+        "hub     hub"
         "footer  footer";
     }
+    .hub { grid-area: hub; }
     header  { grid-area: header; }
     nav     { grid-area: nav; }
     section { grid-area: section; }
@@ -156,6 +158,62 @@
       background: rgba(255,255,255,0.85); color: #e67e22; font-weight: bold; cursor: pointer;
     }
 
+    /* 카테고리 허브 (reactive.html): PC는 가로 메뉴, 모바일은 햄버거 */
+    .hub {
+      background: #fff; border-radius: 14px; padding: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .hub-bar {
+      position: relative; display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px dashed #ffd9a8;
+    }
+    .hub-title { margin: 0; font-size: 1.35rem; color: #e67e22; }
+    .hub-menu { display: flex; gap: 0.25rem; list-style: none; margin: 0; padding: 0; }
+    .hub-menu a {
+      display: block; color: #455a64; text-decoration: none;
+      padding: 0.45rem 0.9rem; border-radius: 999px; font-weight: bold;
+    }
+    .hub-menu a:hover { background: #fff0dc; color: #e67e22; }
+    .hub-menu a.active { background: #ff9a3c; color: #fff; }
+    .hub-burger {
+      display: none; width: 2.5rem; height: 2.5rem; background: none; border: none;
+      cursor: pointer; padding: 0.4rem; flex-direction: column; justify-content: center; gap: 5px;
+    }
+    .hub-burger span { display: block; height: 3px; background: #e67e22; border-radius: 2px; transition: 0.25s; }
+    .hub-burger.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+    .hub-burger.open span:nth-child(2) { opacity: 0; }
+    .hub-burger.open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+    .hub-panel { display: none; }
+    .hub-panel.show { display: block; }
+    .hub-cards { display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+    .hub-card { background: #fff8ee; border-radius: 12px; padding: 1rem; text-align: center; }
+    .hub-card .emoji { font-size: 2.2rem; }
+    .hub-card h3 { margin: 0.25rem 0; font-size: 1.05rem; }
+    .hub-card p { margin: 0; font-size: 0.88rem; color: #607d8b; }
+
+    /* 큰 원형 버튼 → reactive.html 을 전체 화면으로 열기 */
+    #appBtn {
+      position: fixed; left: 1.25rem; bottom: 1.25rem; z-index: 20;
+      width: 96px; height: 96px; border-radius: 50%; border: none;
+      background: radial-gradient(circle at 30% 25%, #ffd36b, #ff7a1a);
+      color: #fff; font-weight: bold; font-size: 0.95rem; line-height: 1.25;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+      box-shadow: 0 6px 18px rgba(230,126,34,0.55); cursor: pointer;
+      transition: transform 0.2s;
+    }
+    #appBtn .big { font-size: 2.2rem; line-height: 1; }
+    #appBtn:hover { transform: scale(1.08); }
+    #appBtn[hidden] { display: none; }
+    #appModal { position: fixed; inset: 0; z-index: 40; background: #fff; }
+    #appModal[hidden] { display: none; }
+    #appModal iframe { width: 100%; height: 100%; border: 0; }
+    #appClose {
+      position: absolute; right: 0.9rem; bottom: 0.9rem; z-index: 2;
+      padding: 0.6rem 1.1rem; border: none; border-radius: 999px;
+      background: #ff7a1a; color: #fff; font-weight: bold; cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
     /* 반응형: PC(넓은 화면) → 태블릿 → 모바일 */
     header h1 { font-size: clamp(1.4rem, 4vw, 2.2rem); }
 
@@ -169,8 +227,18 @@
         padding: 0.6rem;
         gap: 0.7rem;
         grid-template-columns: 1fr;
-        grid-template-areas: "header" "nav" "section" "article" "aside" "footer";
+        grid-template-areas: "header" "nav" "section" "article" "aside" "hub" "footer";
       }
+      .hub { padding: 1rem; }
+      .hub-burger { display: flex; }
+      .hub-menu {
+        display: none; flex-direction: column; gap: 0;
+        position: absolute; left: 0; right: 0; top: 100%; z-index: 5;
+        background: #fff; padding: 0.5rem; border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+      }
+      .hub-menu.open { display: flex; }
+      .hub-menu a { padding: 0.75rem 0.9rem; border-radius: 8px; }
       header { padding: 1.4rem 0.8rem; }
       section, article, aside { padding: 1rem; }
       /* 메뉴가 길어도 가로로 밀어서 볼 수 있게 */
@@ -184,6 +252,8 @@
       /* 채팅창은 화면을 거의 꽉 채움 */
       #chatPanel { right: 0.5rem; bottom: 0.5rem; width: calc(100vw - 1rem); height: calc(100dvh - 1rem); }
       #chatBtn { right: 0.75rem; bottom: 0.75rem; padding: 0.7rem 1rem; }
+      #appBtn { left: 0.75rem; bottom: 0.75rem; width: 78px; height: 78px; font-size: 0.8rem; }
+      #appBtn .big { font-size: 1.8rem; }
     }
 
     @media (max-width: 380px) {
@@ -257,6 +327,58 @@
       <div class="tip">💡 <b>TIP</b> 감귤은 서늘하고 통풍이 잘되는 곳에 보관하면 더 오래 신선해요.</div>
     </aside>
 
+    <div class="hub" id="hub">
+      <div class="hub-bar">
+        <h2 class="hub-title">🗂️ 카테고리 허브</h2>
+        <button class="hub-burger" id="hubBurger" aria-label="메뉴 열기" aria-expanded="false" aria-controls="hubMenu">
+          <span></span><span></span><span></span>
+        </button>
+        <ul class="hub-menu" id="hubMenu">
+          <li><a href="#hub" data-tab="food" class="active">🍽️ 음식</a></li>
+          <li><a href="#hub" data-tab="furniture">🛋️ 가구</a></li>
+          <li><a href="#hub" data-tab="realestate">🏠 부동산</a></li>
+          <li><a href="#hub" data-tab="stock">📈 주식</a></li>
+          <li><a href="#hub" data-tab="map">🗺️ 지도</a></li>
+        </ul>
+      </div>
+
+      <div class="hub-panel show" id="hub-food">
+        <div class="hub-cards">
+          <div class="hub-card"><div class="emoji">🍊</div><h3>제주 감귤</h3><p>새콤달콤한 겨울 대표 과일</p></div>
+          <div class="hub-card"><div class="emoji">🐖</div><h3>흑돼지</h3><p>쫄깃하고 고소한 제주 흑돼지 구이</p></div>
+          <div class="hub-card"><div class="emoji">🍜</div><h3>고기국수</h3><p>진한 육수가 일품인 제주 향토 음식</p></div>
+        </div>
+      </div>
+      <div class="hub-panel" id="hub-furniture">
+        <div class="hub-cards">
+          <div class="hub-card"><div class="emoji">🛏️</div><h3>침대</h3><p>숙면을 위한 매트리스와 프레임</p></div>
+          <div class="hub-card"><div class="emoji">🪑</div><h3>의자</h3><p>오래 앉아도 편안한 사무용 의자</p></div>
+          <div class="hub-card"><div class="emoji">🗄️</div><h3>수납장</h3><p>공간을 깔끔하게 정리하는 수납 가구</p></div>
+        </div>
+      </div>
+      <div class="hub-panel" id="hub-realestate">
+        <div class="hub-cards">
+          <div class="hub-card"><div class="emoji">🏢</div><h3>아파트</h3><p>지역별 아파트 매매·전세 정보</p></div>
+          <div class="hub-card"><div class="emoji">🏡</div><h3>주택</h3><p>단독·다가구 주택 시세 확인</p></div>
+          <div class="hub-card"><div class="emoji">🏬</div><h3>상가</h3><p>상권 분석과 임대 정보</p></div>
+        </div>
+      </div>
+      <div class="hub-panel" id="hub-stock">
+        <div class="hub-cards">
+          <div class="hub-card"><div class="emoji">💹</div><h3>시장 동향</h3><p>오늘의 증시 흐름을 한눈에</p></div>
+          <div class="hub-card"><div class="emoji">🔍</div><h3>종목 검색</h3><p>관심 종목의 기본 정보 확인</p></div>
+          <div class="hub-card"><div class="emoji">📰</div><h3>경제 뉴스</h3><p>투자에 참고할 주요 소식</p></div>
+        </div>
+      </div>
+      <div class="hub-panel" id="hub-map">
+        <div class="hub-cards">
+          <div class="hub-card"><div class="emoji">📍</div><h3>내 주변</h3><p>가까운 장소를 지도에서 찾기</p></div>
+          <div class="hub-card"><div class="emoji">🚗</div><h3>길찾기</h3><p>출발지에서 목적지까지 경로 안내</p></div>
+          <div class="hub-card"><div class="emoji">⭐</div><h3>즐겨찾기</h3><p>자주 가는 장소를 저장</p></div>
+        </div>
+      </div>
+    </div>
+
     <footer id="contact">
       <p>🌴 제주 특산물 이야기</p>
       <p>📞 문의: 064-000-0000 · ✉️ jeju@example.com</p>
@@ -270,6 +392,56 @@
     <button id="chatClose" aria-label="채팅 닫기">✕</button>
     <iframe id="chatFrame" title="제주 특산물 에이전트"></iframe>
   </div>
+
+  <!-- 큰 원형 버튼: 누르면 reactive.html 이 전체 화면으로 열립니다 -->
+  <button id="appBtn" aria-label="카테고리 앱 열기"><span class="big">🗂️</span><span>카테고리</span></button>
+  <div id="appModal" hidden>
+    <iframe id="appFrame" title="카테고리 앱"></iframe>
+    <button id="appClose">✕ 닫기</button>
+  </div>
+
+  <script>
+    // reactive.html 열기/닫기 (처음 열 때 불러옴)
+    const appBtn = document.getElementById('appBtn');
+    const appModal = document.getElementById('appModal');
+    const appFrame = document.getElementById('appFrame');
+    appBtn.addEventListener('click', () => {
+      if (!appFrame.getAttribute('src')) appFrame.setAttribute('src', 'reactive.html');
+      appModal.hidden = false;
+      appBtn.hidden = true;
+    });
+    document.getElementById('appClose').addEventListener('click', () => {
+      appModal.hidden = true;
+      appBtn.hidden = false;
+    });
+  </script>
+
+  <script>
+    // 카테고리 허브: 탭 전환 + 모바일 햄버거 메뉴
+    const hubBurger = document.getElementById('hubBurger');
+    const hubMenu = document.getElementById('hubMenu');
+    const hubLinks = hubMenu.querySelectorAll('a');
+
+    function setHubMenu(open) {
+      hubMenu.classList.toggle('open', open);
+      hubBurger.classList.toggle('open', open);
+      hubBurger.setAttribute('aria-expanded', open);
+      hubBurger.setAttribute('aria-label', open ? '메뉴 닫기' : '메뉴 열기');
+    }
+
+    hubBurger.addEventListener('click', () => setHubMenu(!hubMenu.classList.contains('open')));
+
+    hubLinks.forEach((a) => {
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.querySelectorAll('.hub-panel').forEach((p) => p.classList.toggle('show', p.id === 'hub-' + a.dataset.tab));
+        hubLinks.forEach((l) => l.classList.toggle('active', l === a));
+        setHubMenu(false);
+      });
+    });
+
+    window.addEventListener('resize', () => { if (innerWidth > 720) setHubMenu(false); });
+  </script>
 
   <script>
     // 채팅창 열기/닫기 (처음 열 때 agent.html 을 불러옴)
