@@ -88,6 +88,19 @@
     .item h3 { margin: 0.25rem 0; font-size: 1.05rem; }
     .item p { margin: 0; font-size: 0.88rem; color: #607d8b; }
 
+    /* 이미지 검색 슬라이더 */
+    .finder { margin-top: 1.25rem; padding-top: 1rem; border-top: 1px dashed #ffd9a8; text-align: center; }
+    .finder h3 { margin: 0 0 0.5rem; color: #e67e22; }
+    .finder input { padding: 0.5rem 0.75rem; width: 60%; border: 1px solid #ddd; border-radius: 8px; }
+    .finder button {
+      padding: 0.5rem 1rem; border: none; border-radius: 8px;
+      background: #ff9a3c; color: #fff; font-weight: bold; cursor: pointer;
+    }
+    .finder button:hover { background: #e67e22; }
+    #viewer img { width: 100%; height: 300px; object-fit: cover; border-radius: 12px; margin-top: 0.75rem; }
+    #info { margin: 0.4rem 0; color: #607d8b; font-size: 0.88rem; }
+    #msg { color: #607d8b; font-size: 0.9rem; }
+
     /* 아티클: 감귤 스토리 */
     article p { margin: 0 0 0.75rem; }
     .quote {
@@ -153,6 +166,19 @@
         <div class="item"><div class="emoji">🍵</div><h3>녹차</h3><p>청정 화산 토양에서 자란 향긋한 차</p></div>
         <div class="item"><div class="emoji">🥕</div><h3>구좌 당근</h3><p>달고 아삭한 제주 겨울 당근</p></div>
       </div>
+
+      <div class="finder">
+        <h3>🔍 제주 사진 찾아보기</h3>
+        <input id="query" placeholder="검색어 (예: 제주 감귤, 흑돼지)">
+        <button id="search">검색</button>
+        <p id="msg"></p>
+        <div id="viewer" hidden>
+          <img id="photo" alt="">
+          <div id="info"></div>
+          <button id="prev">◀ 이전</button>
+          <button id="next">다음 ▶</button>
+        </div>
+      </div>
     </section>
 
     <article id="story">
@@ -188,5 +214,50 @@
       <p>© 2026 Jeju Specialties. All rights reserved.</p>
     </footer>
   </div>
+
+  <script>
+    // 이미지는 Vercel 서버리스 함수(/api/images)를 통해 받아옵니다. (키는 서버에만 있음)
+    let images = [];
+    let index = 0;
+    const $ = (id) => document.getElementById(id);
+
+    async function search() {
+      const q = $('query').value.trim();
+      if (!q) return;
+      $('msg').textContent = '검색 중...';
+      $('viewer').hidden = true;
+
+      try {
+        const res = await fetch('/api/images?q=' + encodeURIComponent(q));
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || res.status);
+        images = data.images;
+      } catch (e) {
+        $('msg').textContent = '불러오지 못했어요: ' + e.message;
+        return;
+      }
+
+      if (images.length === 0) {
+        $('msg').textContent = '검색 결과가 없어요.';
+        return;
+      }
+      index = 0;
+      $('msg').textContent = '';
+      $('viewer').hidden = false;
+      show();
+    }
+
+    function show() {
+      const img = images[index];
+      $('photo').src = img.url;
+      $('photo').alt = img.tags;
+      $('info').textContent = (index + 1) + ' / ' + images.length + '  ·  ' + img.tags;
+    }
+
+    $('search').addEventListener('click', search);
+    $('query').addEventListener('keydown', (e) => { if (e.key === 'Enter') search(); });
+    $('prev').addEventListener('click', () => { index = (index - 1 + images.length) % images.length; show(); });
+    $('next').addEventListener('click', () => { index = (index + 1) % images.length; show(); });
+  </script>
 </body>
 </html>
