@@ -134,6 +134,28 @@
     }
     footer p { margin: 0.2rem 0; }
 
+    /* 채팅 버튼 + 채팅창 */
+    #chatBtn {
+      position: fixed; right: 1.25rem; bottom: 1.25rem; z-index: 20;
+      padding: 0.8rem 1.2rem; border: none; border-radius: 999px;
+      background: #ff9a3c; color: #fff; font-weight: bold; font-size: 1rem;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.25); cursor: pointer;
+    }
+    #chatBtn:hover { background: #e67e22; }
+    #chatPanel {
+      position: fixed; right: 1.25rem; bottom: 1.25rem; z-index: 30;
+      width: min(380px, calc(100vw - 2rem)); height: min(560px, calc(100vh - 2rem));
+      background: #fff; border-radius: 16px; overflow: hidden;
+      box-shadow: 0 8px 28px rgba(0,0,0,0.3);
+    }
+    #chatPanel[hidden] { display: none; }
+    #chatPanel iframe { width: 100%; height: 100%; border: 0; }
+    #chatClose {
+      position: absolute; top: 0.5rem; right: 0.6rem; z-index: 2;
+      width: 1.8rem; height: 1.8rem; border: none; border-radius: 50%;
+      background: rgba(255,255,255,0.85); color: #e67e22; font-weight: bold; cursor: pointer;
+    }
+
     @media (max-width: 720px) {
       .page {
         grid-template-columns: 1fr;
@@ -214,6 +236,29 @@
       <p>© 2026 Jeju Specialties. All rights reserved.</p>
     </footer>
   </div>
+
+  <!-- 채팅 에이전트: 버튼을 누르면 agent.html 이 채팅창으로 열립니다 -->
+  <button id="chatBtn" aria-label="채팅 열기">💬 에이전트와 채팅</button>
+  <div id="chatPanel" hidden>
+    <button id="chatClose" aria-label="채팅 닫기">✕</button>
+    <iframe id="chatFrame" title="제주 특산물 에이전트"></iframe>
+  </div>
+
+  <script>
+    // 채팅창 열기/닫기 (처음 열 때 agent.html 을 불러옴)
+    const chatBtn = document.getElementById('chatBtn');
+    const chatPanel = document.getElementById('chatPanel');
+    const chatFrame = document.getElementById('chatFrame');
+    chatBtn.addEventListener('click', () => {
+      if (!chatFrame.getAttribute('src')) chatFrame.setAttribute('src', 'agent.html');
+      chatPanel.hidden = false;
+      chatBtn.hidden = true;
+    });
+    document.getElementById('chatClose').addEventListener('click', () => {
+      chatPanel.hidden = true;
+      chatBtn.hidden = false;
+    });
+  </script>
 
   <script>
     // 이미지는 Vercel 서버리스 함수(/api/images)를 통해 받아옵니다. (키는 서버에만 있음)
