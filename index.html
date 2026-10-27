@@ -226,6 +226,7 @@
       if (!q) return;
       $('msg').textContent = '검색 중...';
       $('viewer').hidden = true;
+      clearInterval(timer);
 
       try {
         const res = await fetch('/api/images?q=' + encodeURIComponent(q));
@@ -245,6 +246,23 @@
       $('msg').textContent = '';
       $('viewer').hidden = false;
       show();
+      startSlide();
+    }
+
+    // 0.5초마다 다음 이미지로 자동 슬라이드
+    let timer = null;
+    function startSlide() {
+      clearInterval(timer);
+      timer = setInterval(() => {
+        index = (index + 1) % images.length;
+        show();
+      }, 500);
+    }
+
+    function stepManual(delta) {
+      index = (index + delta + images.length) % images.length;
+      show();
+      startSlide();
     }
 
     function show() {
@@ -256,8 +274,8 @@
 
     $('search').addEventListener('click', search);
     $('query').addEventListener('keydown', (e) => { if (e.key === 'Enter') search(); });
-    $('prev').addEventListener('click', () => { index = (index - 1 + images.length) % images.length; show(); });
-    $('next').addEventListener('click', () => { index = (index + 1) % images.length; show(); });
+    $('prev').addEventListener('click', () => stepManual(-1));
+    $('next').addEventListener('click', () => stepManual(1));
   </script>
 </body>
 </html>
