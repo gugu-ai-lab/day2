@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        function plus(a,b){
+            return a+b
+        }
+        function minus(a,b){
+            return a-b
+        }
+        function multiply(a,b){
+            return a*b
+        }
+        function divide(a,b){
+            return a/b
+        }
+
+        // 버튼 id 와 호출할 함수를 한 곳에 모아 두고, 반복문으로 한꺼번에 연결한다.
+        var operations = {
+            plus: plus,
+            minus: minus,
+            multiply: multiply,
+            divide: divide
+        };
+
+        // head 안에서는 body가 아직 없으므로, 문서가 다 읽힌 뒤에 버튼에 이벤트를 연결한다.
+        document.addEventListener('DOMContentLoaded', function () {
+            Object.keys(operations).forEach(function (id) {
+                document.querySelector('button#' + id).addEventListener('click', function () {
+                    // input 의 값은 글자(문자열)라서 Number 로 숫자로 바꿔야 "4"+"6" 이 46 이 되지 않는다.
+                    var a = Number(document.querySelector('input#a').value);
+                    var b = Number(document.querySelector('input#b').value);
+                    document.querySelector('#result').textContent = '결과: ' + operations[id](a, b);
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    안녕하세요
+    <h1>
+        반갑습니다
+    </h1>
+    <h2>
+        반갑습니다
+    </h2>
+    <input id="a" type="number" placeholder="첫 번째 숫자">
+    <input id="b" type="number" placeholder="두 번째 숫자">
+    <button id="plus" >+</button>
+    <button id="minus" >-</button>
+    <button id="multiply" >*</button>
+    <button id="divide" >/</button>
+    <p id="result"></p>
+</body>
+</html>
